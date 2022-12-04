@@ -1,11 +1,12 @@
-import React, {useState, useMemo} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-import {useCalendar} from '../DatePicker';
+import { useCalendar } from '../DatePicker';
 
 const Days = () => {
-  const {options, state, utils, onDateChange} = useCalendar();
+  const { options, state, utils, onDateChange } = useCalendar();
   const [mainState, setMainState] = state;
+  const [marks, setMarks] = useState([]);
   const [itemSize, setItemSize] = useState(0);
   const style = styles(options);
   const days = useMemo(() => utils.getMonthDays(mainState.activeDate));
@@ -18,10 +19,19 @@ const Days = () => {
     onDateChange(utils.getFormated(utils.getDate(date), 'dateFormat'));
   };
 
-  const changeItemHeight = ({nativeEvent}) => {
-    const {width} = nativeEvent.layout;
+  const changeItemHeight = ({ nativeEvent }) => {
+    const { width } = nativeEvent.layout;
     !itemSize && setItemSize((width / 7).toFixed(2) * 1 - 0.5);
   };
+
+  const handleMarks = (date) => {
+    if (marks.includes(date)) {
+      const filterMarks = marks.filter(item => item !== date)
+      setMarks(filterMarks)
+    } else {
+      setMarks([...marks, date])
+    }
+  }
 
   return (
     <View style={[style.container, utils.flexDirection]} onLayout={changeItemHeight}>
@@ -41,7 +51,10 @@ const Days = () => {
                 },
                 mainState.selectedDate === day.date && style.dayItemSelected,
               ]}
-              onPress={() => !day.disabled && onSelectDay(day.date)}
+              onPress={() => {
+                !day.disabled && onSelectDay(day.date);
+                !day.disabled && handleMarks(day.date)
+              }}
               activeOpacity={0.8}>
               <Text
                 style={[
@@ -91,4 +104,4 @@ const styles = theme =>
     },
   });
 
-export {Days};
+export { Days };
