@@ -49,7 +49,7 @@ const Days = () => {
                 {
                   borderRadius: itemSize / 2,
                 },
-                mainState.selectedDate === day.date && style.dayItemSelected,
+                marks.includes(day.date) && style.dayItemSelected,
               ]}
               onPress={() => {
                 !day.disabled && onSelectDay(day.date);
@@ -59,7 +59,7 @@ const Days = () => {
               <Text
                 style={[
                   style.dayText,
-                  mainState.selectedDate === day.date && style.dayTextSelected,
+                  marks.includes(day.date) && style.dayTextSelected,
                   day.disabled && style.dayTextDisabled,
                 ]}>
                 {day.dayString}
